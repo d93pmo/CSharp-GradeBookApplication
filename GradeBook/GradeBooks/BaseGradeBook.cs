@@ -14,12 +14,14 @@ namespace GradeBook.GradeBooks
         public string Name { get; set; }
         public List<Student> Students { get; set; }
         public GradeBookType Type { get; set; }
+        public bool IsWeighted { get; set; }
 
         private GradeBookType type;
 
-        public BaseGradeBook(string name)
+        public BaseGradeBook(string name, bool isWeighted)
         {
             Name = name;
+            IsWeighted = isWeighted;
             Students = new List<Student>();
         }
 
@@ -109,20 +111,28 @@ namespace GradeBook.GradeBooks
 
         public virtual double GetGPA(char letterGrade, StudentType studentType)
         {
+            var gpa_numeric = 0;
             switch (letterGrade)
             {
                 case 'A':
-                    return 4;
+                    gpa_numeric = 4;
+                    break;
                 case 'B':
-                    return 3;
+                    gpa_numeric = 3;
+                    break;
                 case 'C':
-                    return 2;
+                    gpa_numeric = 2;
+                    break;
                 case 'D':
-                    return 1;
+                    gpa_numeric = 1;
+                    break;
                 case 'F':
-                    return 0;
+                    gpa_numeric = 0;
+                    break;
             }
-            return 0;
+            if (IsWeighted == true && (studentType == StudentType.Honors || studentType == StudentType.DualEnrolled))
+                gpa_numeric += 1;
+            return gpa_numeric;
         }
 
         public virtual void CalculateStatistics()
